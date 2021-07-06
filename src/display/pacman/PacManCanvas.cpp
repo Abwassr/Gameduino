@@ -56,7 +56,7 @@ void PACMAN_CANVAS::drawScreen(Adafruit_ILI9341 tft, long frame)
         break;
     }
     Serial.println(lastPressedDirection);
-    movePacMan();
+    movePacMan(tft);
     drawPacMan(tft);
 
     // ! TODO Center BoundingBox to match the fillCircle used in drawPacMan();
@@ -65,13 +65,15 @@ void PACMAN_CANVAS::drawScreen(Adafruit_ILI9341 tft, long frame)
 }
 void PACMAN_CANVAS::handleJoyStick(int x, int y)
 {
-    //TODO Implement "lastPressedDirection"
+    // TODO Implement "lastPressedDirection"
 }
 void PACMAN_CANVAS::handleBTN1()
 {
+    // ? Braucht man überhaupt Buttons für Pacman?
 }
 void PACMAN_CANVAS::handleBTN2()
 {
+    // ? Braucht man überhaupt Buttons für Pacman?
 }
 void PACMAN_CANVAS::drawBackground(Adafruit_ILI9341 tft, long frame)
 {
@@ -111,7 +113,7 @@ void PACMAN_CANVAS::drawPacMan(Adafruit_ILI9341 tft)
     tft.fillCircle(px, py, pacman_radius, color);
 }
 
-void PACMAN_CANVAS::movePacMan()
+void PACMAN_CANVAS::movePacMan(Adafruit_ILI9341 tft)
 {
     //* Only accept / process keystrokes when on Tile intersection
     if (px % grid_x == 0 && py % grid_y == 0)
@@ -141,6 +143,31 @@ void PACMAN_CANVAS::movePacMan()
     }
     px += vx;
     py += vy;
+
+    int old_x = px - vx;
+    int old_y = py - vy;
+    //* Fix out of Bounds with loop-around
+    if (px < 0)
+    {
+        tft.fillCircle(old_x, old_y, pacman_radius, tft.color565(21, 21, 21));
+        px = LCD_WIDTH;
+    }
+    if (px > LCD_WIDTH)
+    {
+        tft.fillCircle(old_x, old_y, pacman_radius, tft.color565(21, 21, 21));
+        px = 0;
+    }
+    if (py < 0)
+    {
+        tft.fillCircle(old_x, old_y, pacman_radius, tft.color565(21, 21, 21));
+        py = LCD_HEIGHT;
+    }
+    if (py > LCD_HEIGHT)
+    {
+        tft.fillCircle(old_x, old_y, pacman_radius, tft.color565(21, 21, 21));
+        py = 0;
+    }
+
     if (checkCollision())
     {
     }

@@ -17,8 +17,8 @@
 #define LCD_HEIGHT 240
 #define HALF_LCD_WIDTH (LCD_WIDTH / 2)
 #define HALF_LCD_HEIGHT (LCD_HEIGHT / 2)
-#define FPS 24
-#define DEBUG true
+#define FPS 24     //* Framerate is capped to 24FPS to improve consitency, maybe integrade a "frame delta" time
+#define DEBUG true // ? Toggles Debug mode (FPS counter, Game specific debugging)
 
 #define CONSOLE_NAME "Gameduino"
 #define DEV_NAME "Bodensee Fuechse 2021"

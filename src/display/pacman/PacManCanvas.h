@@ -43,6 +43,6 @@ public:
     void handleBTN2();
     void drawBackground(Adafruit_ILI9341 tft, long frame);
     void drawPacMan(Adafruit_ILI9341 tft);
-    void movePacMan();
+    void movePacMan(Adafruit_ILI9341 tft);
     bool checkCollision();
 };
