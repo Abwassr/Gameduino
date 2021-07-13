@@ -23,8 +23,6 @@ void TETRIS_CANVAS::drawScreen(Adafruit_ILI9341 tft, long frame)
 {
     tft.fillScreen(tft.color565(255, 0, 0));
     tft.setCursor(10, 10);
-    tft.println("Tetris Canvas is not supported!");
-    tft.println("TetrisCanvas.cpp:29");
 }
 void TETRIS_CANVAS::handleJoyStick(int x, int y)
 {
@@ -35,3 +33,37 @@ void TETRIS_CANVAS::handleBTN1()
 void TETRIS_CANVAS::handleBTN2()
 {
 }
+/*
+bool *TETRIS_TILES::getBitMask(TETRIS_TILE_TYPE type)
+{
+    switch (type)
+    {
+    case I_SHAPE:
+        bool shape[1][4] = {{1, 1, 1, 1}};
+        return *shape;
+
+    case J_SHAPE:
+        bool shape[2][3] = {{1, 1, 1}, {0, 0, 1}};
+        return *shape;
+
+    case L_SHAPE:
+        bool shape[2][3] = {{1, 1, 1}, {1, 0, 0}};
+        return *shape;
+
+    case O_SHAPE:
+        bool shape[2][2] = {{1, 1}, {1, 1}};
+        return *shape;
+
+    case S_SHAPE:
+        bool shape[2][3] = {{1, 1, 0}, {0, 1, 1}};
+        return *shape;
+
+    case T_SHAPE:
+        bool shape[2][3] = {{1, 1, 1}, {0, 1, 0}};
+        return *shape;
+
+    case Z_SHAPE:
+        bool shape[2][3] = {{1, 1, 0}, {0, 1, 1}};
+        return *shape;
+    }
+}*/

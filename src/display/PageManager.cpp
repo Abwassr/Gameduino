@@ -9,9 +9,12 @@ CANVAS *lastDisplayed = nullptr;
 long frame = 0;
 long frameTime = 0;
 
-//Adafruit_ILI9341 tft = Adafruit_ILI9341(10, 9, 13, 14, -1, 12);
+//* This is very slow!
+//Adafruit_ILI9341 tft = Adafruit_ILI9341(15, 2, 13, 14, -1, 12);
 
-Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC, TFT_MOSI, TFT_CLK, -1, TFT_MISO);
+Adafruit_ILI9341 tft = Adafruit_ILI9341(15, 2);
+
+//Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC, TFT_MOSI, TFT_CLK, -1, TFT_MISO);
 
 Adafruit_ILI9341 PageManager::getTFT()
 {

@@ -12,7 +12,7 @@
 #define JOY_SW 6
 
 // NORMAL (OUR TFT)
-
+/*
 #define TFT_CS 21
 #define TFT_DC 57
 #define TFT_MOSI 11
@@ -20,7 +20,7 @@
 #define TFT_RST -1
 #define TFT_MISO 12
 #define TFT_RT_CS 20
-
+*/
 /*
 // FLIPPED (ROBOTER AG TFT)
 #define TFT_CS 21

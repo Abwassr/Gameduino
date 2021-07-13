@@ -12,6 +12,9 @@
 PageManager pm = PageManager();
 CANVAS *currentlyDisplayed = nullptr;
 
+// ! HEY FALLS DER ESP JETZT NICHT FUNKTIONIERT,
+// ! CHECK DIE "Pins.h", falls das Problem weiterhin besteht, Pins direkt in "PageManager.h" eintragen!
+
 void setup()
 {
   Serial.begin(9600); // Initialisiert die Serielle Kommunikation

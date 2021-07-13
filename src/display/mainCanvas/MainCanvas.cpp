@@ -4,6 +4,7 @@
 #include "../tetris/TetrisCanvas.h"
 #include "main.h"
 
+// Number of pages of the Main Menu
 #define NUM_OF_PAGES 2
 
 MAIN_MENU_ENTRY *pages[] = {new PACMAN_MENU_ENTRY(), new TETRIS_MENU_ENTRY()};

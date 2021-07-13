@@ -16,3 +16,19 @@ public:
     void handleBTN1();
     void handleBTN2();
 };
+
+enum TETRIS_TILE_TYPE
+{
+    I_SHAPE,
+    J_SHAPE,
+    L_SHAPE,
+    O_SHAPE,
+    S_SHAPE,
+    T_SHAPE,
+    Z_SHAPE
+};
+
+class TETRIS_TILES
+{
+    bool *getBitMask(TETRIS_TILE_TYPE type);
+};
