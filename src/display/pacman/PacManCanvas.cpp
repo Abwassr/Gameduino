@@ -55,7 +55,6 @@ void PACMAN_CANVAS::drawScreen(Adafruit_ILI9341 tft, long frame)
         lastPressedDirection = NESW_WEST;
         break;
     }
-    Serial.println(lastPressedDirection);
     movePacMan(tft);
     drawPacMan(tft);
 
@@ -78,6 +77,7 @@ void PACMAN_CANVAS::handleBTN2()
 void PACMAN_CANVAS::drawBackground(Adafruit_ILI9341 tft, long frame)
 {
     tft.fillScreen(tft.color565(21, 21, 21));
+    initializeMap();
     if (DEBUG)
     {
         for (int tile_x = 0; tile_x <= grid_count_x; tile_x++)
@@ -96,6 +96,13 @@ void PACMAN_CANVAS::drawBackground(Adafruit_ILI9341 tft, long frame)
         {
             tft.drawLine(0, tile_y * grid_y + grid_y / 2, LCD_WIDTH, tile_y * grid_y + grid_y / 2, tft.color565(0, 0, 80));
         }
+    }
+    for (int index = 0; index != wall_count; index++)
+    {
+        Serial.print("Drawing wall ");
+        Serial.print(index);
+        Serial.println("!");
+        walls[index].draw(tft);
     }
 }
 
@@ -175,4 +182,18 @@ void PACMAN_CANVAS::movePacMan(Adafruit_ILI9341 tft)
 
 bool PACMAN_CANVAS::checkCollision()
 {
+}
+
+void PACMAN_CANVAS::initializeMap()
+{
+    walls = {
+        // Walls of the map!
+        createWall(1, 1, 4, 1),
+    };
+}
+
+PACMAN_WALL *PACMAN_CANVAS::createWall(int tileX, int tileY, int tileX2, int tileY2)
+{
+    wall_count++;
+    return new PACMAN_WALL(tileX * grid_x, tileY * grid_y, (tileX2 - tileX) * grid_x, (tileY2 - tileY) * grid_y);
 }

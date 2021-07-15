@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"name": "ArduinoForwarder",
+			"path": "..\\..\\Documents\\PlatformIO\\Projects\\ArduinoForwarder"
+		}
+	],
+	"settings": {}
+}
