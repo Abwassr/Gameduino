@@ -1,5 +1,6 @@
 # Gameduino
 Code for the Gameduino Project
+Code vom Arduino: 
 
 ## Einleitung
 Der Gameduino™ ist die perfekte Mischung aus einem Gameboy und einem Arduino, der TFT Touchbildschirm ermöglicht zusammen mit dem 360° Joystick und den 2 ergonomisch platzierten Knöpfen ein intensives Spielerlebnis. Spiele wie PacMan, Tetris können neu erlebt werden.
