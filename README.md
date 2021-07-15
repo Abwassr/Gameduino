@@ -1,5 +1,4 @@
 # Gameduino
-Code for the Gameduino Project
 Code vom Arduino: https://github.com/Abwassr/ArduinoForwarder/
 
 ## Einleitung
