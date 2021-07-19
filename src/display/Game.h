@@ -34,6 +34,9 @@ public:
     int bby;
     int bbw;
     int bbh;
+    BOUNDINGBOX()
+    {
+    }
     BOUNDINGBOX(int x, int y, int w, int h)
     {
         bbx = x;
@@ -41,26 +44,68 @@ public:
         bbw = w;
         bbh = h;
     }
-    Point *getCorners()
+
+    Point getUL_Point()
     {
-        Point *ol = new Point(bbx, bby);
-        Point *por = new Point(bbx + bbw, bby);
-        Point *ul = new Point(bbx, bby + bbh);
-        Point *ur = new Point(bbx + bbw, bby + bbh);
-        static Point returner[] = {*ol, *por, *ul, *ur};
-        return returner;
+        return Point(bbx, bby + bbh);
+    }
+    Point getUR_Point()
+    {
+        return Point(bbx + bbw, bby + bbh);
+    }
+    Point getOL_Point()
+    {
+        return Point(bbx, bby);
+    }
+    Point getOR_Point()
+    {
+        return Point(bbx + bbw, bby);
+    }
+    bool intersects(BOUNDINGBOX bb)
+    {
+        return bb.isOverlapping(getOL_Point()) || bb.isOverlapping(getOR_Point()) ||
+               bb.isOverlapping(getUL_Point()) || bb.isOverlapping(getUR_Point());
     }
     bool isOverlapping(Point p)
     {
         int x = p.gx;
         int y = p.gy;
-        return (x >= bbx && x <= bbx + bbw && y >= bby && y <= bby + bbh);
+
+        Serial.print(x);
+        Serial.print(" >= ");
+        Serial.print(bbx);
+        Serial.print(" | ");
+        Serial.print(x >= bbx);
+        Serial.print("   |   ");
+        Serial.print(x);
+        Serial.print(" <= ");
+        Serial.print(bbx + bbw);
+        Serial.print(" | ");
+        Serial.print(x <= bbx + bbw);
+        Serial.print("   |   ");
+        Serial.print(y);
+        Serial.print(" >= ");
+        Serial.print(bby);
+        Serial.print(" | ");
+        Serial.print(y <= bby);
+        Serial.print("   |   ");
+        Serial.print(y);
+        Serial.print(" <= ");
+        Serial.print(bby + bbh);
+        Serial.print(" | ");
+        Serial.print(y <= bby + bbh);
+
+        return (
+            x >= bbx &&
+            x <= bbx + bbw &&
+            y >= bby &&
+            y <= bby + bbh);
     }
     //
     void show(Adafruit_ILI9341 tft, int r, int g, int b)
     {
         tft.fillRect(bbx, bby, bbw, bbw, tft.color565(r, g, b));
-        Point *corners = getCorners();
+        Point corners[] = {getOL_Point(), getOR_Point(), getUL_Point(), getUR_Point()};
         for (int index = 0; index <= 3; index++)
         {
             Point p = corners[index];

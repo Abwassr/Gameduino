@@ -12,7 +12,7 @@ class TETRIS_CANVAS : public GAME
 {
 public:
     void drawScreen(Adafruit_ILI9341 tft, long frame);
-    void handleJoyStick(int x, int y);
+    void handleJoyStick(int x, int y, double angle);
     void handleBTN1();
     void handleBTN2();
 };

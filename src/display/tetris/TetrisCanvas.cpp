@@ -24,7 +24,7 @@ void TETRIS_CANVAS::drawScreen(Adafruit_ILI9341 tft, long frame)
     tft.fillScreen(tft.color565(255, 0, 0));
     tft.setCursor(10, 10);
 }
-void TETRIS_CANVAS::handleJoyStick(int x, int y)
+void TETRIS_CANVAS::handleJoyStick(int x, int y, double angle)
 {
 }
 void TETRIS_CANVAS::handleBTN1()

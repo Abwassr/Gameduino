@@ -28,7 +28,7 @@ void MAIN_CANVAS::onSelect()
     pages[page]->onSelect();
 }
 
-void MAIN_CANVAS::handleJoyStick(int x, int y)
+void MAIN_CANVAS::handleJoyStick(int x, int y, double angle)
 {
     if (x > 0)
     {

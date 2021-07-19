@@ -75,6 +75,7 @@ void PageManager::init()
     tft.println(DEV_NAME);
 }
 
+uint32_t prevHeap = 0;
 void PageManager::showCanvas(CANVAS *canvas)
 {
     if (lastDisplayed != canvas)
@@ -101,14 +102,24 @@ void PageManager::showCanvas(CANVAS *canvas)
         tft.print("approx. FPS: ");
         tft.println((1000 / deltaTime));
         tft.fillRect(LCD_WIDTH - 10, LCD_HEIGHT - 10, 10, 10, tft.color565(255 * ((1000 / deltaTime) < 10), 255 * ((1000 / deltaTime) >= 10), 0));
-        /* if (frame == 0)
-        { // ONLY FOR STATIC CONTENT
-            tft.fillRect(0, 0, LCD_WIDTH, 10, tft.color565(0, 0, 0));
-            tft.setCursor(5, 0);
-            // FD = First Draw
-            tft.print("TFT: %dx%d, Version: %s, FD: %ldms@%ldfps", LCD_WIDTH, LCD_HEIGHT, VERSION, deltaTime, (1000 / deltaTime));
-            tft.print("Version: ", LCD_WIDTH, LCD_HEIGHT, VERSION, deltaTime, (1000 / deltaTime));
-        }*/
+
+        tft.fillRect(0, 0, LCD_WIDTH, 10, tft.color565(0, 0, 0));
+        tft.setCursor(5, 0);
+        tft.print("Free Heap: ");
+        uint32_t freeHeap = ESP.getFreeHeap();
+        int hpc = (int)prevHeap - (int)freeHeap;
+        tft.print(freeHeap);
+        tft.setCursor(120, 0);
+        tft.print("Heap Percent: ");
+        tft.print(100 - ((double)((int)((double)((double)freeHeap / (double)MAX_FREE_HEAP) * (double)10000)) / (double)100));
+        tft.print("%");
+        tft.setCursor(250, 0);
+        tft.print("HPC: ");
+        tft.print(hpc);
+        prevHeap = freeHeap;
+        tft.fillRect(LCD_WIDTH - 10, 0, 10, 10, tft.color565(255 * (hpc > 0), 255 * (hpc < 0), 255 * (hpc == 0)));
+
+        // FD = First Draw
     }
     frame++;
     frameTime = millis();

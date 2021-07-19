@@ -5,6 +5,8 @@ uint8_t bgcolor[] = {201, 196, 0}; // Unsigned 8-bit Numbers
 NESW_Direction lastPressedDirection = NESW_UNDEFINED;
 Point *lastTileVisited = new Point(0, 0);
 
+PACMAN_WALL *walls;
+
 void PACMAN_MENU_ENTRY::drawPage(Adafruit_ILI9341 tft, long frame)
 {
     Serial.println("PACMAN_MENU_ENTRY");
@@ -29,42 +31,46 @@ void PACMAN_MENU_ENTRY::onSelect()
 
 void PACMAN_CANVAS::drawScreen(Adafruit_ILI9341 tft, long frame)
 {
+
     //* All fixed with simple frame==0 check!😀
     // // TODO  Optimize redraw (dont redraw if nothing changed)
     // // ?     Zones?, dont draw black?
     // // * Only draw background on the first frame (Performance Optimization)
+    /*Serial.print(grid_count_x);
+    Serial.print("@");
+    Serial.print(grid_x);
+    Serial.print("px");
+    Serial.print("\t");
+    Serial.print(grid_count_y);
+    Serial.print("@");
+    Serial.print(grid_y);
+    Serial.println("px");*/
     if (frame == 0)
+    {
         drawBackground(tft, frame);
-    if (frame == 0)
-    {
-        vy = 1;
+        walls = getMap();
     }
-    int x = random(4);
-    switch (x)
-    {
-    case 0:
-        lastPressedDirection = NESW_NORTH;
-        break;
-    case 1:
-        lastPressedDirection = NESW_EAST;
-        break;
-    case 2:
-        lastPressedDirection = NESW_SOUTH;
-        break;
-    case 3:
-        lastPressedDirection = NESW_WEST;
-        break;
-    }
-    movePacMan(tft);
-    drawPacMan(tft);
-
-    // ! TODO Center BoundingBox to match the fillCircle used in drawPacMan();
-    BOUNDINGBOX *pac_bb = new BOUNDINGBOX(px - pacman_radius, py - pacman_radius, pacman_radius * 2, pacman_radius * 2);
-    BOUNDINGBOX *box_bb = new BOUNDINGBOX(10, 10, 10, 10);
+    movePacMan(tft); //! HEAP LEAK: 24hpc
+    drawPacMan(tft); //* NO HEAP LEAK
 }
-void PACMAN_CANVAS::handleJoyStick(int x, int y)
+void PACMAN_CANVAS::handleJoyStick(int x, int y, double angle)
 {
-    // TODO Implement "lastPressedDirection"
+    if (angle > -22.5 && angle < 22.5)
+    {
+        lastPressedDirection = NESW_NORTH;
+    }
+    if (angle > -157.5 && angle < -22.5)
+    {
+        lastPressedDirection = NESW_WEST;
+    }
+    if (angle < -157.5 || angle > 157.5)
+    {
+        lastPressedDirection = NESW_SOUTH;
+    }
+    if (angle < 157.5 && angle > 22.5)
+    {
+        lastPressedDirection = NESW_EAST;
+    }
 }
 void PACMAN_CANVAS::handleBTN1()
 {
@@ -77,7 +83,6 @@ void PACMAN_CANVAS::handleBTN2()
 void PACMAN_CANVAS::drawBackground(Adafruit_ILI9341 tft, long frame)
 {
     tft.fillScreen(tft.color565(21, 21, 21));
-    initializeMap();
     if (DEBUG)
     {
         for (int tile_x = 0; tile_x <= grid_count_x; tile_x++)
@@ -174,26 +179,114 @@ void PACMAN_CANVAS::movePacMan(Adafruit_ILI9341 tft)
         tft.fillCircle(old_x, old_y, pacman_radius, tft.color565(21, 21, 21));
         py = 0;
     }
+    // TODO Center BoundingBox to match the fillCircle used in drawPacMan();
 
+    pac_bb = BOUNDINGBOX(px - pacman_radius, py - pacman_radius, pacman_radius * 2, pacman_radius * 2);
+    pac_bb.show(getPageManager().getTFT(), 0, 128, 128);
     if (checkCollision())
     {
+        Serial.println("Collision!!!!!");
+        vx = 0;
+        vy = 0;
+        px = lastTileVisited->gx;
+        py = lastTileVisited->gy;
     }
 }
 
+// TODO REWRITE WHOLE WALL SYSTEM
 bool PACMAN_CANVAS::checkCollision()
 {
+    Serial.print("wall_count: ");
+    Serial.println(wall_count);
+    for (int index = 0; index != wall_count; index++)
+    {
+        Serial.print("index: ");
+        Serial.println(index);
+        //Serial.print("Checking wall #");
+        //Serial.print(index);
+        //Serial.print(": ");
+        PACMAN_WALL wall = walls[index];
+
+        //Serial.print(index2);
+        //Serial.print("|");
+        BOUNDINGBOX bb = wall.bb;
+        Serial.print("-- ");
+        Serial.print(index);
+        Serial.println(" --");
+        Serial.print("bb.bbx: ");
+        Serial.println(bb.bbx);
+        Serial.print("bb.bby: ");
+        Serial.println(bb.bby);
+        Serial.print("bb.bbw: ");
+        Serial.println(bb.bbw);
+        Serial.print("bb.bbh: ");
+        Serial.println(bb.bbh);
+        Serial.println("---------");
+        Serial.print("pac_bb.bbx: ");
+        Serial.println(pac_bb.bbx);
+        Serial.print("pac_bb.bby: ");
+        Serial.println(pac_bb.bby);
+        Serial.print("pac_bb.bbw: ");
+        Serial.println(pac_bb.bbw);
+        Serial.print("pac_bb.bbh: ");
+        Serial.println(pac_bb.bbh);
+        Serial.println("---------");
+        Serial.println("---------");
+        Serial.println("---------");
+
+        delay(100);
+        if (bb.intersects(pac_bb))
+        {
+            //    Serial.print("y");
+            //Serial.println("");
+            return true;
+        }
+        //Serial.print("n");
+        //Serial.println("");
+    }
+    return false;
 }
 
-void PACMAN_CANVAS::initializeMap()
+PACMAN_WALL *PACMAN_CANVAS::getMap()
 {
-    walls = {
+    PACMAN_WALL walls2[] = {
         // Walls of the map!
-        createWall(1, 1, 4, 1),
-    };
+        createWall(0, 0, grid_count_x, 0),
+        createWall(0, 0, 0, grid_count_y)};
+    return walls2;
 }
 
-PACMAN_WALL *PACMAN_CANVAS::createWall(int tileX, int tileY, int tileX2, int tileY2)
+PACMAN_WALL PACMAN_CANVAS::createWall(int tileX, int tileY, int tileX2, int tileY2)
 {
+    Serial.print("tileX: ");
+    Serial.println(tileX);
+    Serial.print("tileY: ");
+    Serial.println(tileY);
+    Serial.print("tileX2: ");
+    Serial.println(tileX2);
+    Serial.print("tileY2: ");
+    Serial.println(tileY2);
+    Serial.println("-------");
+    Serial.print("Wall_X: ");
+    Serial.println(tileX * grid_x + grid_x / 2);
+    Serial.print("Wall_Y: ");
+    Serial.println(tileY * grid_y + grid_y / 2);
+    Serial.print("Wall_W: ");
+    Serial.println((tileX2 - tileX) * grid_x);
+    Serial.print("Wall_H: ");
+    Serial.println((tileY2 - tileY) * grid_y);
+    Serial.println("-------");
+    /*
+    tileX: 0
+tileY: 0
+tileX2: 20
+tileY2: 0
+-------
+tileX: 0
+tileY: 0
+tileX2: 0
+tileY2: 15
+*/
     wall_count++;
-    return new PACMAN_WALL(tileX * grid_x, tileY * grid_y, (tileX2 - tileX) * grid_x, (tileY2 - tileY) * grid_y);
+    return PACMAN_WALL(tileX * grid_x + grid_x / 2, tileY * grid_y + grid_y / 2, (tileX2 - tileX) * grid_x, (tileY2 - tileY) * grid_y);
 }
