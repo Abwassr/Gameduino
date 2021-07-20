@@ -11,12 +11,12 @@ public:
 class PACMAN_WALL
 {
 public:
-    int x;
-    int y;
-    int w;
-    int h;
+    uint16 x;
+    uint16 y;
+    uint16 w;
+    uint16 h;
     BOUNDINGBOX bb;
-    PACMAN_WALL(int x1, int y1, int w1, int h1)
+    PACMAN_WALL(uint16 x1, uint16 y1, uint16 w1, uint16 h1)
     {
         x = x1;
         y = y1;
@@ -40,12 +40,6 @@ public:
         Serial.println("-------");
         bb = BOUNDINGBOX(x - xBuffer, y - yBuffer, w + 2 * xBuffer, h + 2 * yBuffer);
     }
-    bool checkforColllisions(int cx, int cy)
-    {
-        /*int maxX = x + w;
-        int maxY = y + h;*/
-        return false; // TODO Programm, currently just placeholder
-    }
     void draw(Adafruit_ILI9341 tft)
     {
         tft.drawRect(bb.bbx, bb.bby, bb.bbw, bb.bbh, tft.color565(255, 255, 0));
@@ -55,16 +49,16 @@ public:
 class PACMAN_CANVAS : public GAME
 {
 public:
-    int px = HALF_LCD_WIDTH;
-    int py = HALF_LCD_HEIGHT;
-    int vx = 0;
-    int vy = 0;
-    int grid_count_x = 20;
-    int grid_x = LCD_WIDTH / grid_count_x;
-    int grid_count_y = LCD_HEIGHT / grid_x;
-    int grid_y = LCD_WIDTH / grid_count_x;
-    int pacman_radius = 5;
-    int wall_count = 0;
+    uint16 px = HALF_LCD_WIDTH;
+    uint16 py = HALF_LCD_HEIGHT;
+    uint16 vx = 0;
+    uint16 vy = 0;
+    uint16 grid_count_x = 20;
+    uint16 grid_x = LCD_WIDTH / grid_count_x;
+    uint16 grid_count_y = LCD_HEIGHT / grid_x;
+    uint16 grid_y = LCD_WIDTH / grid_count_x;
+    uint16 pacman_radius = 5;
+    uint16 wall_count = 0;
     BOUNDINGBOX pac_bb = BOUNDINGBOX(px - pacman_radius, py - pacman_radius, pacman_radius * 2, pacman_radius * 2);
     void drawScreen(Adafruit_ILI9341 tft, long frame);
     void handleJoyStick(int x, int y, double angle);
@@ -75,5 +69,5 @@ public:
     void movePacMan(Adafruit_ILI9341 tft);
     bool checkCollision();
     PACMAN_WALL *getMap();
-    PACMAN_WALL createWall(int tileX, int tileY, int width, int height);
+    PACMAN_WALL createWall(uint16 tileX, uint16 tileY, uint16 width, uint16 height);
 };

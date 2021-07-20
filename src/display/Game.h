@@ -18,26 +18,26 @@ enum GAMESTATE
 class Point
 {
 public:
-    Point(int x, int y)
+    uint16 gx;
+    uint16 gy;
+    Point(uint16 x, uint16 y)
     {
         gx = x;
         gy = y;
     }
-    int gx;
-    int gy;
 };
 
 class BOUNDINGBOX
 {
 public:
-    int bbx;
-    int bby;
-    int bbw;
-    int bbh;
+    uint16 bbx;
+    uint16 bby;
+    uint16 bbw;
+    uint16 bbh;
     BOUNDINGBOX()
     {
     }
-    BOUNDINGBOX(int x, int y, int w, int h)
+    BOUNDINGBOX(uint16 x, uint16 y, uint16 w, uint16 h)
     {
         bbx = x;
         bby = y;
@@ -68,8 +68,8 @@ public:
     }
     bool isOverlapping(Point p)
     {
-        int x = p.gx;
-        int y = p.gy;
+        uint16 x = p.gx;
+        uint16 y = p.gy;
 
         Serial.print(x);
         Serial.print(" >= ");

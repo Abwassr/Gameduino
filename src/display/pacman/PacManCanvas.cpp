@@ -47,8 +47,8 @@ void PACMAN_CANVAS::drawScreen(Adafruit_ILI9341 tft, long frame)
     Serial.println("px");*/
     if (frame == 0)
     {
-        drawBackground(tft, frame);
         walls = getMap();
+        drawBackground(tft, frame);
     }
     movePacMan(tft); //! HEAP LEAK: 24hpc
     drawPacMan(tft); //* NO HEAP LEAK
@@ -102,13 +102,13 @@ void PACMAN_CANVAS::drawBackground(Adafruit_ILI9341 tft, long frame)
             tft.drawLine(0, tile_y * grid_y + grid_y / 2, LCD_WIDTH, tile_y * grid_y + grid_y / 2, tft.color565(0, 0, 80));
         }
     }
-    for (int index = 0; index != wall_count; index++)
+    /*for (int index = 0; index != wall_count; index++)
     {
         Serial.print("Drawing wall ");
         Serial.print(index);
         Serial.println("!");
         walls[index].draw(tft);
-    }
+    }*/
 }
 
 void PACMAN_CANVAS::drawPacMan(Adafruit_ILI9341 tft)
@@ -117,8 +117,8 @@ void PACMAN_CANVAS::drawPacMan(Adafruit_ILI9341 tft)
     int color = tft.color565(255, 255, 0);
 
     //* Erase old PacMan
-    int old_x = px - vx;
-    int old_y = py - vy;
+    uint16 old_x = px - vx;
+    uint16 old_y = py - vy;
     tft.fillCircle(old_x, old_y, pacman_radius, tft.color565(21, 21, 21));
 
     //* Draw new PacMan
@@ -156,8 +156,8 @@ void PACMAN_CANVAS::movePacMan(Adafruit_ILI9341 tft)
     px += vx;
     py += vy;
 
-    int old_x = px - vx;
-    int old_y = py - vy;
+    uint16 old_x = px - vx;
+    uint16 old_y = py - vy;
     //* Fix out of Bounds with loop-around
     if (px < 0)
     {
@@ -192,58 +192,33 @@ void PACMAN_CANVAS::movePacMan(Adafruit_ILI9341 tft)
         py = lastTileVisited->gy;
     }
 }
-
+bool once = true;
 // TODO REWRITE WHOLE WALL SYSTEM
 bool PACMAN_CANVAS::checkCollision()
 {
-    Serial.print("wall_count: ");
-    Serial.println(wall_count);
-    for (int index = 0; index != wall_count; index++)
-    {
-        Serial.print("index: ");
-        Serial.println(index);
-        //Serial.print("Checking wall #");
-        //Serial.print(index);
-        //Serial.print(": ");
-        PACMAN_WALL wall = walls[index];
-
-        //Serial.print(index2);
-        //Serial.print("|");
-        BOUNDINGBOX bb = wall.bb;
-        Serial.print("-- ");
-        Serial.print(index);
-        Serial.println(" --");
-        Serial.print("bb.bbx: ");
-        Serial.println(bb.bbx);
-        Serial.print("bb.bby: ");
-        Serial.println(bb.bby);
-        Serial.print("bb.bbw: ");
-        Serial.println(bb.bbw);
-        Serial.print("bb.bbh: ");
-        Serial.println(bb.bbh);
-        Serial.println("---------");
-        Serial.print("pac_bb.bbx: ");
-        Serial.println(pac_bb.bbx);
-        Serial.print("pac_bb.bby: ");
-        Serial.println(pac_bb.bby);
-        Serial.print("pac_bb.bbw: ");
-        Serial.println(pac_bb.bbw);
-        Serial.print("pac_bb.bbh: ");
-        Serial.println(pac_bb.bbh);
-        Serial.println("---------");
-        Serial.println("---------");
-        Serial.println("---------");
-
-        delay(100);
-        if (bb.intersects(pac_bb))
+    if (once)
+        for (unsigned int a = 0; a < 2; a = a + 1)
         {
-            //    Serial.print("y");
-            //Serial.println("");
-            return true;
+            Serial.print("wall_x: ");
+            Serial.println(walls[a].x);
+            Serial.print("wall_y: ");
+            Serial.println(walls[a].y);
+            Serial.print("wall_w: ");
+            Serial.println(walls[a].w);
+            Serial.print("wall_h: ");
+            Serial.println(walls[a].h);
+            Serial.println("------");
+            Serial.print("wall_bb_x: ");
+            Serial.println(walls[a].bb.bbx);
+            Serial.print("wall_bb_y: ");
+            Serial.println(walls[a].bb.bby);
+            Serial.print("wall_bb_w: ");
+            Serial.println(walls[a].bb.bbw);
+            Serial.print("wall_bb_h: ");
+            Serial.println(walls[a].bb.bbh);
+            Serial.println("------");
+            once = false;
         }
-        //Serial.print("n");
-        //Serial.println("");
-    }
     return false;
 }
 
@@ -253,40 +228,30 @@ PACMAN_WALL *PACMAN_CANVAS::getMap()
         // Walls of the map!
         createWall(0, 0, grid_count_x, 0),
         createWall(0, 0, 0, grid_count_y)};
-    return walls2;
+    return &*walls2;
 }
 
-PACMAN_WALL PACMAN_CANVAS::createWall(int tileX, int tileY, int tileX2, int tileY2)
+PACMAN_WALL PACMAN_CANVAS::createWall(uint16 tileX, uint16 tileY, uint16 tileX2, uint16 tileY2)
 {
+    wall_count++;
     Serial.print("tileX: ");
-    Serial.println(tileX);
+    Serial.println((uint16)tileX);
     Serial.print("tileY: ");
-    Serial.println(tileY);
+    Serial.println((uint16)tileY);
     Serial.print("tileX2: ");
-    Serial.println(tileX2);
+    Serial.println((uint16)tileX2);
     Serial.print("tileY2: ");
-    Serial.println(tileY2);
+    Serial.println((uint16)tileY2);
     Serial.println("-------");
     Serial.print("Wall_X: ");
-    Serial.println(tileX * grid_x + grid_x / 2);
+    Serial.println((uint16)tileX * grid_x + grid_x / 2);
     Serial.print("Wall_Y: ");
-    Serial.println(tileY * grid_y + grid_y / 2);
+    Serial.println((uint16)tileY * grid_y + grid_y / 2);
     Serial.print("Wall_W: ");
-    Serial.println((tileX2 - tileX) * grid_x);
+    Serial.println((uint16)(tileX2 - tileX) * grid_x);
     Serial.print("Wall_H: ");
-    Serial.println((tileY2 - tileY) * grid_y);
+    Serial.println((uint16)(tileY2 - tileY) * grid_y);
     Serial.println("-------");
-    /*
-    tileX: 0
-tileY: 0
-tileX2: 20
-tileY2: 0
--------
-tileX: 0
-tileY: 0
-tileX2: 0
-tileY2: 15
-*/
-    wall_count++;
+
     return PACMAN_WALL(tileX * grid_x + grid_x / 2, tileY * grid_y + grid_y / 2, (tileX2 - tileX) * grid_x, (tileY2 - tileY) * grid_y);
 }
