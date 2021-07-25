@@ -13,13 +13,16 @@
 #define PIN_SWI_2 18
 #define PIN_SWI_3 19
 
+// JOYSTICK CALIBRATION
+#define JOYSTICK_CALI_SOUTH 130
+
 #define LCD_WIDTH 320
 #define LCD_HEIGHT 240
 #define HALF_LCD_WIDTH (LCD_WIDTH / 2)
 #define HALF_LCD_HEIGHT (LCD_HEIGHT / 2)
-#define FPS 24     //* Framerate is capped to 24FPS to improve consitency, maybe integrade a "frame delta" time
-#define DEBUG true // ? Toggles Debug mode (FPS counter, Game specific debugging)
-#define VERBOSE false
+#define FPS 24      //* Framerate is capped to 24FPS to improve consitency, maybe integrade a "frame delta" time
+#define DEBUG false // ? Toggles Debug mode (FPS counter, Game specific debugging)
+#define VERBOSE true
 #define MAX_FREE_HEAP 51432
 
 #define CONSOLE_NAME "Gameduino"

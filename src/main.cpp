@@ -19,7 +19,7 @@ CANVAS *currentlyDisplayed = nullptr;
 void setup()
 {
   Wire.begin();
-  Serial.begin(9600); // Initialisiert die Serielle Kommunikation
+  Serial.begin(115200); // Initialisiert die Serielle Kommunikation
   Serial.print("ESP.getBootMode(); ");
   Serial.println(ESP.getBootMode());
   Serial.print("ESP.getSdkVersion(); ");
